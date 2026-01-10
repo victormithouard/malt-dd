@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Dossier: Freelancer Management Systems (v3)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Utilities */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e2e8f0;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 400px;
+        }
+
+        .lane-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .lane-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .lane-card.active {
+            ring: 2px;
+            ring-color: #0f172a;
+            background-color: #f1f5f9;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+        }
+
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <!-- Chosen Palette: Slate & Teal. -->
+    <!-- Application Structure Plan:
+         1. Hero/Executive Summary
+         2. Unit of Competition (Lanes)
+         3. Comparative Matrix
+         4. Player Atlas WITH GTM GENERATOR
+         5. Regime & Watchlist
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Navigation -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">📊</span>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide">MARKET DOSSIER</h1>
+                    <p class="text-xs text-slate-400 uppercase tracking-wider">Freelancer Management Systems (FMS)</p>
+                </div>
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium">
+                <button onclick="scrollToSection('executive')" class="hover:text-teal-400 transition">Overview</button>
+                <button onclick="scrollToSection('lanes')" class="hover:text-teal-400 transition">Market Lanes</button>
+                <button onclick="scrollToSection('matrix')" class="hover:text-teal-400 transition">Comparative
+                    Matrix</button>
+                <button onclick="scrollToSection('atlas')" class="hover:text-teal-400 transition">Player Atlas</button>
+                <button onclick="scrollToSection('regime')" class="hover:text-teal-400 transition">Catalysts</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 space-y-12">
+
+        <!-- Executive Overview -->
+        <section id="executive" class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 fade-in">
+            <div class="flex flex-col md:flex-row gap-8 items-start">
+                <div class="md:w-2/3">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-teal-500 pl-4">Executive
+                        Overview</h2>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        The Freelancer Management System (FMS) sector is bifurcating along geographic and value lines.
+                        In the US, the battle is between <strong>Legacy VMS</strong> (SAP) and <strong>Agile
+                            FMS</strong> (WorkMarket). In Europe, <strong>Malt</strong> has established a "Third Way": a
+                        high-value, localized marketplace for white-collar consultants that effectively replaces
+                        traditional staffing agencies.
+                    </p>
+                    <p class="text-slate-600 leading-relaxed">
+                        Differentiation is moving beyond software workflow. The new battleground is
+                        <strong>Indemnification</strong> (Compliance) and <strong>Curated Talent Access</strong>.
+                        Players like Malt and Deel are winning by solving the "Trust & Legal" friction, whereas pure
+                        software players face commoditization.
+                    </p>
+                </div>
+                <div class="md:w-1/3 bg-slate-50 rounded-lg p-6 border border-slate-100">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase mb-4">Sector Vitals</h3>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between border-b border-slate-200 pb-2">
+                            <span class="text-slate-600">Maturity</span>
+                            <span class="font-medium text-teal-600">Growth / Consolidation</span>
+                        </li>
+                        <li class="flex justify-between border-b border-slate-200 pb-2">
+                            <span class="text-slate-600">Primary Moat</span>
+                            <span class="font-medium text-indigo-600">Compliance & Risk</span>
+                        </li>
+                        <li class="flex justify-between border-b border-slate-200 pb-2">
+                            <span class="text-slate-600">Regulator Risk</span>
+                            <span class="font-medium text-amber-600">High (EU Labor / US DOL)</span>
+                        </li>
+                        <li class="flex justify-between pb-2">
+                            <span class="text-slate-600">Cyclicality</span>
+                            <span class="font-medium text-teal-600">Counter-Cyclical (Resilient)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Unit of Competition (Lanes) -->
+        <section id="lanes" class="fade-in">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-900">Unit of Competition: The 4 Strategic Lanes</h2>
+                <p class="text-slate-500 mt-2">Select a lane to filter the Player Atlas and Comparative Matrix below.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="lane-container">
+                <!-- Lanes injected via JS -->
+            </div>
+        </section>
+
+        <!-- Comparative Matrix (Chart.js) -->
+        <section id="matrix" class="fade-in">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Competitive Positioning Matrix</h2>
+                        <p class="text-sm text-slate-500">Comparing <span id="matrix-lane-label"
+                                class="font-semibold text-teal-600">All Lanes</span> on Pricing Power vs. Moat
+                            Durability.</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="compMatrixChart"></canvas>
+                </div>
+                <div class="mt-4 text-center text-xs text-slate-400 italic">
+                    Note: Bubble size represents estimated Relative Market Presence (Qualitative).
+                </div>
+            </div>
+        </section>
+
+        <!-- Player Atlas -->
+        <section id="atlas" class="fade-in">
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Player Atlas</h2>
+                    <p class="text-slate-500 mt-2">Deep qualitative profiles. Filtered by: <span id="atlas-filter-label"
+                            class="font-semibold text-teal-600">All Lanes</span></p>
+                </div>
+                <button onclick="resetFilters()" class="text-sm text-slate-500 hover:text-teal-600 underline">Reset
+                    Filters</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" id="player-grid">
+                <!-- Player Cards injected via JS -->
+            </div>
+        </section>
+
+        <!-- Customer Choice Narratives & Moats -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 fade-in">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center">
+                    <span class="bg-indigo-100 text-indigo-700 p-2 rounded mr-3">👥</span>
+                    Customer Choice Narratives
+                </h3>
+                <div class="space-y-4">
+                    <div class="border-l-2 border-indigo-200 pl-4">
+                        <h4 class="font-semibold text-slate-800">Enterprise Buyers (EU vs US)</h4>
+                        <p class="text-sm text-slate-600 mt-1">
+                            <strong>EU Buyers:</strong> Choose <em>Malt</em> for the "Consultant" tier to replace
+                            expensive agencies like Altran/Capgemini. Strict local compliance (GDPR, labor law) is the
+                            primary driver.<br>
+                            <strong>US Buyers:</strong> Prioritize IRS 1099 classification tools (WorkMarket) or speed
+                            (Upwork).
+                        </p>
+                    </div>
+                    <div class="border-l-2 border-indigo-200 pl-4">
+                        <h4 class="font-semibold text-slate-800">Operations Leaders</h4>
+                        <p class="text-sm text-slate-600 mt-1">Solve for <strong>Speed to Fill</strong> and
+                            <strong>Field Utility</strong>. They prefer <em>Field Nation</em> or niche platforms that
+                            offer geo-fencing, mobile apps for workers, and instant assignment capability.</p>
+                    </div>
+                    <div class="border-l-2 border-indigo-200 pl-4">
+                        <h4 class="font-semibold text-slate-800">The "Long-Tail" SMB</h4>
+                        <p class="text-sm text-slate-600 mt-1">Prioritize <strong>Liquidity</strong> (finding someone
+                            fast) over management tooling. They default to <em>Upwork</em> or <em>Fiverr</em> and use
+                            the built-in lightweight FMS tools only as a secondary convenience.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center">
+                    <span class="bg-teal-100 text-teal-700 p-2 rounded mr-3">🛡️</span>
+                    Moat Analysis
+                </h3>
+                <div class="space-y-4">
+                    <div class="border-l-2 border-teal-200 pl-4">
+                        <h4 class="font-semibold text-slate-800">Localized Network Effects (Malt)</h4>
+                        <p class="text-sm text-slate-600 mt-1">High-skilled European consultants do not compete
+                            globally. Malt has built dense, localized networks (France, Germany) that are hard for
+                            global players (Upwork) to penetrate due to language and cultural vetting barriers.</p>
+                    </div>
+                    <div class="border-l-2 border-teal-200 pl-4">
+                        <h4 class="font-semibold text-slate-800">The "Compliance Shield"</h4>
+                        <p class="text-sm text-slate-600 mt-1">Players who take on the <strong>Agent of Record
+                                (AOR)</strong> liability (e.g., GreenLight, Deel) have the strongest stickiness. It is
+                            legally risky for an enterprise to switch away from the entity indemnifying them.</p>
+                    </div>
+                    <div class="border-l-2 border-teal-200 pl-4">
+                        <h4 class="font-semibold text-slate-800">Switching Costs (Data)</h4>
+                        <p class="text-sm text-slate-600 mt-1">Moderate. Historical worker ratings and background check
+                            data create friction, but new "Universal Profile" standards are slowly eroding this data
+                            silo moat.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Regime, Regulation & Watchlist -->
+        <section id="regime" class="bg-slate-900 text-slate-300 rounded-xl shadow-lg p-8 fade-in">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-6">Regime & Catalysts</h2>
+                    <ul class="space-y-6">
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-4">⚖️</span>
+                            <div>
+                                <h4 class="font-bold text-white">Regulatory Tightening (DOL/IR35)</h4>
+                                <p class="text-sm mt-1">Global crackdown on worker misclassification (e.g., US Dept of
+                                    Labor rules, UK IR35). <strong>Impact:</strong> Bullish for Compliance/AOR players;
+                                    Bearish for pure matchmaking platforms without indemnity layers.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-4">🤖</span>
+                            <div>
+                                <h4 class="font-bold text-white">AI Displacement</h4>
+                                <p class="text-sm mt-1">Generative AI is altering the <em>type</em> of work in FMS (less
+                                    copywriting, more AI training/checking). <strong>Impact:</strong> FMS platforms must
+                                    rapidly re-tool taxonomies and verification for "AI Editors."</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-2xl mr-4">📉</span>
+                            <div>
+                                <h4 class="font-bold text-white">Macro Cost-Cutting</h4>
+                                <p class="text-sm mt-1">Recessionary pressure favors "Variable Workforce" over FTEs.
+                                    <strong>Impact:</strong> Net positive for FMS volume, as companies freeze headcount
+                                    but maintain output via contractors.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-800 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold text-teal-400 mb-4 uppercase tracking-wider">Investable Watchlist</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                            <div>
+                                <div class="font-bold text-white">Direct Sourcing Ratio</div>
+                                <div class="text-xs text-slate-400">KPI</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-teal-400">Rising</div>
+                                <div class="text-xs text-slate-400">% of hires via FMS vs Agency</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                            <div>
+                                <div class="font-bold text-white">AOR Attach Rate</div>
+                                <div class="text-xs text-slate-400">KPI</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-teal-400">Critical</div>
+                                <div class="text-xs text-slate-400">% of clients buying compliance</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                            <div>
+                                <div class="font-bold text-white">Global Payroll Consolidation</div>
+                                <div class="text-xs text-slate-400">M&A Watch</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-amber-400">High Prob</div>
+                                <div class="text-xs text-slate-400">Deel/Remote rolling up FMS</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pb-1">
+                            <div>
+                                <div class="font-bold text-white">Platform Take-Rates</div>
+                                <div class="text-xs text-slate-400">Risk</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-red-400">Compressing</div>
+                                <div class="text-xs text-slate-400">Due to commoditization</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-slate-400 text-sm mt-12 pb-8">
+            <p>Generated for Investor Review | Data Sources: Public Filings (ADP, SAP, UPWK), Industry Reports (SIA)</p>
+        </footer>
+
+        <!-- GTM MODAL -->
+        <div id="gtm-modal" class="modal-overlay fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all scale-95 opacity-0"
+                id="gtm-modal-content">
+                <!-- Header -->
+                <div class="bg-slate-900 text-white p-6 rounded-t-xl flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold">Strategic GTM Playbook</h3>
+                        <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">AI Strategy Simulator</p>
+                    </div>
+                    <button onclick="closeGTMModal()" class="text-slate-400 hover:text-white transition">
+                        <span class="text-2xl">&times;</span>
+                    </button>
+                </div>
+
+                <!-- Loading State -->
+                <div id="gtm-loading" class="p-12 text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+                    <p class="text-slate-600 font-medium">Analyzing market lanes...</p>
+                    <p class="text-slate-400 text-sm mt-2 typing-cursor" id="loading-text">Computing competitive moat
+                        index</p>
+                </div>
+
+                <!-- Content State -->
+                <div id="gtm-content" class="hidden p-6 space-y-6">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="bg-teal-100 text-teal-800 px-3 py-1 rounded text-sm font-bold"
+                            id="modal-player-name">Player</div>
+                        <div class="h-px bg-slate-200 flex-grow"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">North Star Strategy</h4>
+                            <p class="text-lg font-bold text-slate-800 leading-tight" id="gtm-north-star">...</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Primary Attack Vector</h4>
+                            <p class="text-md font-medium text-indigo-600" id="gtm-vector">...</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-700 mb-3">Tactical Execution Plan</h4>
+                        <ul class="space-y-3" id="gtm-tactics">
+                            <!-- Injected JS -->
+                        </ul>
+                    </div>
+
+                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                        <div class="flex items-start">
+                            <span class="text-xl mr-3">🚀</span>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm">Next Best Action</h4>
+                                <p class="text-amber-800 text-sm mt-1" id="gtm-action">...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-slate-50 p-4 border-t border-slate-100 rounded-b-xl flex justify-end">
+                    <button onclick="closeGTMModal()"
+                        class="px-4 py-2 bg-slate-200 text-slate-700 rounded hover:bg-slate-300 transition text-sm font-medium">Close
+                        Report</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- DATA STORE ---
+
+        // 1. Lanes Definitions
+        const lanes = [
+            { id: 'core', name: 'Core FMS / Infrastructure', icon: '🏗️', desc: 'Workflow, assignment, and payment engines.', color: 'border-blue-500' },
+            { id: 'marketplace', name: 'Distribution / Marketplaces', icon: '🌍', desc: 'Access to talent pools + Lightweight FMS.', color: 'border-purple-500' },
+            { id: 'compliance', name: 'Services / Compliance Wrapper', icon: '⚖️', desc: 'EOR, AOR, and Indemnification services.', color: 'border-teal-500' },
+            { id: 'enterprise', name: 'Legacy VMS / Total Talent', icon: '🏢', desc: 'Complex procurement & contingent suites.', color: 'border-slate-500' }
+        ];
+
+        // 2. Players Data WITH GTM STRATEGIES
+        const players = [
+            {
+                name: 'Malt',
+                lane: 'marketplace',
+                owner: 'Private (VC-Backed)',
+                desc: 'European leader for high-skilled freelance consultants. Replaces traditional staffing agencies.',
+                moats: ['Regional Network Effects (EU)', 'Curated Brand', 'EU Labor Compliance'],
+                vulns: ['US Expansion Barriers', 'Traditional Staffing Counter-attacks'],
+                pricing: 'Client Service Fee + Freelancer Fee',
+                stance: 'Regional Leader (Europe)',
+                gtm: {
+                    northStar: "The Anti-Agency for Enterprise",
+                    vector: "Large Ent. in DACH/Benelux (Consulting Spend)",
+                    tactics: [
+                        "Replace 'preferred vendor' lists with private Malt talent pools.",
+                        "Direct sales motion targeting CIOs/CMOs (not just procurement).",
+                        "Highlight GDPR & Local labor law indemnification as primary differentiator."
+                    ],
+                    action: "Launch localized 'Consultant vs Agency' cost-savings calculator campaign."
+                }
+            },
+            {
+                name: 'ADP WorkMarket',
+                lane: 'core',
+                owner: 'ADP (Public)',
+                desc: 'A pure-play FMS deeply integrated into ADP\'s payroll ecosystem. Strong in field services and IT.',
+                moats: ['Integration Lock-in (ADP)', 'Payment Rails'],
+                vulns: ['UX decay', 'Lack of public talent pool'],
+                pricing: 'SaaS Fee + % of Spend',
+                stance: 'Oligopoly Leader',
+                gtm: {
+                    northStar: "The Payroll-Connected Workforce",
+                    vector: "Existing ADP RUN/Vantage Clients",
+                    tactics: [
+                        "Cross-sell FMS as a 'module' of payroll, not a standalone buy.",
+                        "Focus on 'One 1099 System' messaging to Finance Directors.",
+                        "Bundle implementation fees into multi-year ADP renewals."
+                    ],
+                    action: "In-app prompts within ADP Dashboard for 'Contractor Verification'."
+                }
+            },
+            {
+                name: 'Field Nation',
+                lane: 'core',
+                owner: 'Private',
+                desc: 'Dominant platform for on-site field technicians (cabling, POS repair).',
+                moats: ['Niche Network Effect (Techs)', 'Geo-fencing tech'],
+                vulns: ['Sector Concentration', 'Commoditization of labor'],
+                pricing: 'Transaction Fee %',
+                stance: 'Niche Monopoly',
+                gtm: {
+                    northStar: "The OS for Field Services",
+                    vector: "Managed Service Providers (MSPs)",
+                    tactics: [
+                        "Deep API integrations with ServiceNow & Salesforce FSM.",
+                        "Expand into 'adjacent' trades (HVAC/Retail Merchandising).",
+                        "Build 'Technician Credentialing' passport."
+                    ],
+                    action: "Strategic partnership with hardware OEMs to bundle labor."
+                }
+            },
+            {
+                name: 'Upwork Enterprise',
+                lane: 'marketplace',
+                owner: 'Upwork Inc. (Public)',
+                desc: 'The largest generalist talent marketplace aggressively moving upstream.',
+                moats: ['Global Liquidity', 'Brand Recognition'],
+                vulns: ['Disintermediation', 'Quality Control at Scale'],
+                pricing: 'Client Service Fee + SaaS Subscription',
+                stance: 'Global Scale',
+                gtm: {
+                    northStar: "End-to-End Talent Lifecycle",
+                    vector: "Fortune 500 HR Leaders",
+                    tactics: [
+                        "De-emphasize the 'marketplace' (bidding wars) in sales pitches.",
+                        "Sell 'Enterprise Suite' (BYO Talent) to reduce rogue spend.",
+                        "Offer white-glove 'Talent Scouting' to compete with staffing firms."
+                    ],
+                    action: "Aggressive 'Any Hire' campaign targeting remote-first tech companies."
+                }
+            },
+            {
+                name: 'SAP Fieldglass',
+                lane: 'enterprise',
+                owner: 'SAP (Public)',
+                desc: 'The behemoth of Vendor Management Systems. Handles total workforce.',
+                moats: ['Procurement Entrenchment', 'Global Compliance'],
+                vulns: ['Legacy Codebase', 'User Hostility (UX)', 'Agile Competitors'],
+                pricing: '% of Spend (Volume Tiered)',
+                stance: 'Legacy Dominant',
+                gtm: {
+                    northStar: "Total Workforce Visibility",
+                    vector: "Global 2000 CPO (Chief Procurement Officers)",
+                    tactics: [
+                        "Push 'Services Procurement' (SOW) visibility as the next efficiency frontier.",
+                        "Leverage SAP S/4HANA migration events to force Fieldglass adoption.",
+                        "Focus on audit trail and risk mitigation over UX."
+                    ],
+                    action: "Host exclusive 'Future of Work' summits for C-Suite clients."
+                }
+            },
+            {
+                name: 'Deel',
+                lane: 'compliance',
+                owner: 'Private (VC)',
+                desc: 'International payroll/EOR adding FMS workflow layers.',
+                moats: ['Legal Infrastructure', 'Global Entity Network'],
+                vulns: ['Regulatory Changes', 'Over-extension'],
+                pricing: 'Per Active User / Per Month',
+                stance: 'Disruptor',
+                gtm: {
+                    northStar: "Hire Anyone, Anywhere, Instantly",
+                    vector: "High-Growth Tech Startups & Scaleups",
+                    tactics: [
+                        "Content marketing dominance on LinkedIn (Viral/Community).",
+                        "Bundle 'Contractor Management' free with EOR services.",
+                        "Speed as the ultimate feature (onboard in minutes, not weeks)."
+                    ],
+                    action: "Acquire local payroll engines to verticalize the stack further."
+                }
+            },
+            {
+                name: 'Fiverr Enterprise',
+                lane: 'marketplace',
+                owner: 'Fiverr (Public)',
+                desc: 'Acquired Stoke Talent. Focuses on "Freelance Business Management".',
+                moats: ['Ease of Use', 'Fiverr Funnel'],
+                vulns: ['Perception (Low value work)', 'Market Share'],
+                pricing: 'SaaS Subscription',
+                stance: 'Challenger',
+                gtm: {
+                    northStar: "Frictionless Freelance Teams",
+                    vector: "Mid-Market Dept Heads (Marketing/Creative)",
+                    tactics: [
+                        "Product-Led Growth (PLG) self-serve funnel.",
+                        "Dissociate from '$5 gig' perception by pushing 'Stoke' technology.",
+                        "Focus on creative agencies as a channel partner."
+                    ],
+                    action: "Rebrand enterprise offering to distance from consumer marketplace."
+                }
+            }
+        ];
+
+        // 3. Matrix Data
+        const matrixData = [
+            { x: 7.5, y: 7.5, r: 12, label: 'Malt (EU)', lane: 'marketplace' },
+            { x: 7, y: 8, r: 15, label: 'ADP WorkMarket', lane: 'core' },
+            { x: 6, y: 7, r: 10, label: 'Field Nation', lane: 'core' },
+            { x: 8, y: 5, r: 20, label: 'Upwork Ent.', lane: 'marketplace' },
+            { x: 9, y: 9, r: 25, label: 'SAP Fieldglass', lane: 'enterprise' },
+            { x: 8, y: 8, r: 12, label: 'Deel', lane: 'compliance' },
+            { x: 5, y: 4, r: 8, label: 'Fiverr Ent.', lane: 'marketplace' }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let currentFilter = 'all';
+        let chartInstance = null;
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderLanes();
+            renderAtlas();
+            initChart();
+        });
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderLanes() {
+            const container = document.getElementById('lane-container');
+            container.innerHTML = lanes.map(lane => `
+                <div onclick="filterByLane('${lane.id}')" 
+                     class="lane-card bg-white p-6 rounded-lg border-l-4 ${lane.color} shadow-sm group">
+                    <div class="text-3xl mb-3 group-hover:scale-110 transition-transform">${lane.icon}</div>
+                    <h3 class="font-bold text-lg text-slate-800">${lane.name}</h3>
+                    <p class="text-sm text-slate-500 mt-2">${lane.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderAtlas() {
+            const container = document.getElementById('player-grid');
+            const filteredPlayers = currentFilter === 'all'
+                ? players
+                : players.filter(p => p.lane === currentFilter);
+
+            container.innerHTML = filteredPlayers.map((player, index) => {
+                const laneObj = lanes.find(l => l.id === player.lane);
+                const badgeClass = laneObj ? laneObj.color.replace('border-', 'bg-').replace('500', '100 text-' + laneObj.color.split('-')[1] + '-800') : 'bg-gray-100';
+
+                // Find actual index in full array for the GTM button
+                const realIndex = players.indexOf(player);
+
+                return `
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition flex flex-col h-full">
+                    <div class="p-6 border-b border-slate-100 flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-xl text-slate-900">${player.name}</h3>
+                            <span class="text-xs font-semibold px-2 py-1 rounded ${badgeClass}">${laneObj.name.split('/')[0]}</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-4">${player.owner} | ${player.stance}</p>
+                        <p class="text-sm text-slate-600 mb-4">${player.desc}</p>
+                        
+                        <div class="mb-3">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Why They Win (Moats)</span>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                ${player.moats.map(m => `<span class="text-xs bg-white border border-slate-200 px-2 py-1 rounded text-slate-700">🛡️ ${m}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 p-4 border-t border-slate-200">
+                        <button onclick="openGTMModal(${realIndex})" class="w-full flex items-center justify-center space-x-2 bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-700 border border-slate-300 hover:border-teal-300 font-semibold py-2 px-4 rounded transition duration-200">
+                            <span>⚡ Generate GTM Strategy</span>
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('compMatrixChart').getContext('2d');
+
+            chartInstance = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Market Landscape',
+                        data: matrixData,
+                        backgroundColor: (context) => {
+                            const lane = context.raw?.lane;
+                            if (lane === 'core') return 'rgba(59, 130, 246, 0.6)';
+                            if (lane === 'marketplace') return 'rgba(168, 85, 247, 0.6)';
+                            if (lane === 'compliance') return 'rgba(20, 184, 166, 0.6)';
+                            return 'rgba(100, 116, 139, 0.6)';
+                        },
+                        borderColor: (context) => {
+                            const lane = context.raw?.lane;
+                            if (lane === 'core') return 'rgb(59, 130, 246)';
+                            if (lane === 'marketplace') return 'rgb(168, 85, 247)';
+                            if (lane === 'compliance') return 'rgb(20, 184, 166)';
+                            return 'rgb(100, 116, 139)';
+                        },
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.raw.label + ': (Power: ' + context.raw.x + ', Moat: ' + context.raw.y + ')';
+                                }
+                            },
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 10,
+                            cornerRadius: 4
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Pricing Power / Value Capture' },
+                            min: 0, max: 10,
+                            grid: { color: '#e2e8f0' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Moat Durability' },
+                            min: 0, max: 10,
+                            grid: { color: '#e2e8f0' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- INTERACTION ---
+
+        function filterByLane(laneId) {
+            currentFilter = (currentFilter === laneId) ? 'all' : laneId;
+            const label = currentFilter === 'all' ? 'All Lanes' : lanes.find(l => l.id === currentFilter).name;
+            document.getElementById('atlas-filter-label').innerText = label;
+            document.getElementById('matrix-lane-label').innerText = label;
+
+            document.querySelectorAll('.lane-card').forEach(card => {
+                if (currentFilter === 'all') {
+                    card.classList.remove('active', 'opacity-50');
+                } else {
+                    if (card.getAttribute('onclick').includes(currentFilter)) {
+                        card.classList.add('active');
+                        card.classList.remove('opacity-50');
+                    } else {
+                        card.classList.remove('active');
+                        card.classList.add('opacity-50');
+                    }
+                }
+            });
+
+            renderAtlas();
+            updateChart();
+        }
+
+        function updateChart() {
+            if (!chartInstance) return;
+            const filteredData = currentFilter === 'all'
+                ? matrixData
+                : matrixData.filter(d => d.lane === currentFilter);
+            chartInstance.data.datasets[0].data = filteredData;
+            chartInstance.update();
+        }
+
+        function resetFilters() {
+            currentFilter = 'all';
+            document.getElementById('atlas-filter-label').innerText = 'All Lanes';
+            document.getElementById('matrix-lane-label').innerText = 'All Lanes';
+            document.querySelectorAll('.lane-card').forEach(card => card.classList.remove('active', 'opacity-50'));
+            renderAtlas();
+            updateChart();
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- GTM MODAL LOGIC ---
+        function openGTMModal(playerIndex) {
+            const player = players[playerIndex];
+            const modal = document.getElementById('gtm-modal');
+            const content = document.getElementById('gtm-modal-content');
+            const loading = document.getElementById('gtm-loading');
+            const result = document.getElementById('gtm-content');
+
+            // Open Modal
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            // Reset States
+            loading.classList.remove('hidden');
+            result.classList.add('hidden');
+
+            // Simulate AI Loading
+            const loadingTexts = [
+                "Analyzing regulatory environment...",
+                "Mapping buyer personas...",
+                "Calculating churn risk...",
+                "Synthesizing tactical playbook..."
+            ];
+
+            let step = 0;
+            const textInterval = setInterval(() => {
+                if (step < loadingTexts.length) {
+                    document.getElementById('loading-text').innerText = loadingTexts[step];
+                    step++;
+                }
+            }, 500);
+
+            setTimeout(() => {
+                clearInterval(textInterval);
+                loading.classList.add('hidden');
+                result.classList.remove('hidden');
+                populateGTM(player);
+            }, 2000);
+        }
+
+        function populateGTM(player) {
+            document.getElementById('modal-player-name').innerText = player.name;
+            document.getElementById('gtm-north-star').innerText = player.gtm.northStar;
+            document.getElementById('gtm-vector').innerText = player.gtm.vector;
+            document.getElementById('gtm-action').innerText = player.gtm.action;
+
+            const tacticsList = document.getElementById('gtm-tactics');
+            tacticsList.innerHTML = player.gtm.tactics.map(t => `
+                <li class="flex items-start text-sm text-slate-600">
+                    <span class="text-teal-500 mr-2">✓</span>
+                    ${t}
+                </li>
+            `).join('');
+        }
+
+        function closeGTMModal() {
+            const modal = document.getElementById('gtm-modal');
+            const content = document.getElementById('gtm-modal-content');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+    </script>
+</body>
+
+</html>
