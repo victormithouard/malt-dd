@@ -13,14 +13,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/ai', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'ai.html'));
+app.get('/infographic', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'infographic.html'));
 });
-
-app.get('/composable-evolution', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'composable-evolution.html'));
-});
-
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
