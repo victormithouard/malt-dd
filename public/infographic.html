@@ -692,6 +692,12 @@
 
         function openGTMModal(index) {
             const player = players[index];
+            const modal = document.getElementById('gtm-modal');
+            const backdrop = document.getElementById('modal-backdrop');
+            const content = document.getElementById('modal-content');
+            const loading = document.getElementById('gtm-loading');
+            const result = document.getElementById('gtm-result');
+            const loadingText = document.getElementById('loading-text');
 
             // Show Modal
             modal.classList.remove('hidden');
@@ -706,29 +712,43 @@
             loading.classList.remove('hidden');
             result.classList.add('hidden');
 
-            // Simulate AI
+            // Simulation text
             const texts = ["Scanning market lanes...", "Evaluating competitive pressure...", "Formulating attack vectors..."];
             let i = 0;
             const interval = setInterval(() => {
-                if (i < texts.length) document.getElementById('loading-text').innerText = texts[i++];
-            }, 600);
+                if (i < texts.length) loadingText.innerText = texts[i++];
+            }, 800);
 
-            setTimeout(() => {
-                clearInterval(interval);
-                populateGTM(player);
-                loading.classList.add('hidden');
-                result.classList.remove('hidden');
-            }, 2000);
+            // Fetch from backend
+            fetch('/api/generate-gtm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ player }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    clearInterval(interval);
+                    populateGTM(player, data);
+                    loading.classList.add('hidden');
+                    result.classList.remove('hidden');
+                })
+                .catch(error => {
+                    clearInterval(interval);
+                    console.error('Error:', error);
+                    loadingText.innerText = "Error. Please try again.";
+                });
         }
 
-        function populateGTM(player) {
+        function populateGTM(player, strategy) {
             document.getElementById('modal-player-name').innerText = player.name;
             document.getElementById('modal-player-badge').innerText = player.role;
-            document.getElementById('gtm-north-star').innerText = player.gtm.northStar;
-            document.getElementById('gtm-vector').innerText = player.gtm.vector;
-            document.getElementById('gtm-action').innerText = player.gtm.action;
+            document.getElementById('gtm-north-star').innerText = strategy.northStar;
+            document.getElementById('gtm-vector').innerText = strategy.vector;
+            document.getElementById('gtm-action').innerText = strategy.action;
 
-            document.getElementById('gtm-tactics').innerHTML = player.gtm.tactics.map(t =>
+            document.getElementById('gtm-tactics').innerHTML = strategy.tactics.map(t =>
                 `<li class="flex items-start text-sm text-slate-600"><span class="text-blue-500 font-bold mr-2">✓</span>${t}</li>`
             ).join('');
         }

@@ -251,7 +251,8 @@
                         <h4 class="font-semibold text-slate-800">Operations Leaders</h4>
                         <p class="text-sm text-slate-600 mt-1">Solve for <strong>Speed to Fill</strong> and
                             <strong>Field Utility</strong>. They prefer <em>Field Nation</em> or niche platforms that
-                            offer geo-fencing, mobile apps for workers, and instant assignment capability.</p>
+                            offer geo-fencing, mobile apps for workers, and instant assignment capability.
+                        </p>
                     </div>
                     <div class="border-l-2 border-indigo-200 pl-4">
                         <h4 class="font-semibold text-slate-800">The "Long-Tail" SMB</h4>
@@ -320,7 +321,8 @@
                                 <h4 class="font-bold text-white">Macro Cost-Cutting</h4>
                                 <p class="text-sm mt-1">Recessionary pressure favors "Variable Workforce" over FTEs.
                                     <strong>Impact:</strong> Net positive for FMS volume, as companies freeze headcount
-                                    but maintain output via contractors.</p>
+                                    but maintain output via contractors.
+                                </p>
                             </div>
                         </li>
                     </ul>
@@ -793,6 +795,7 @@
             const content = document.getElementById('gtm-modal-content');
             const loading = document.getElementById('gtm-loading');
             const result = document.getElementById('gtm-content');
+            const loadingText = document.getElementById('loading-text');
 
             // Open Modal
             modal.classList.remove('hidden');
@@ -805,7 +808,7 @@
             loading.classList.remove('hidden');
             result.classList.add('hidden');
 
-            // Simulate AI Loading
+            // Simulation AI Loading Text
             const loadingTexts = [
                 "Analyzing regulatory environment...",
                 "Mapping buyer personas...",
@@ -816,27 +819,41 @@
             let step = 0;
             const textInterval = setInterval(() => {
                 if (step < loadingTexts.length) {
-                    document.getElementById('loading-text').innerText = loadingTexts[step];
+                    loadingText.innerText = loadingTexts[step];
                     step++;
                 }
             }, 500);
 
-            setTimeout(() => {
-                clearInterval(textInterval);
-                loading.classList.add('hidden');
-                result.classList.remove('hidden');
-                populateGTM(player);
-            }, 2000);
+            // Fetch from backend
+            fetch('/api/generate-gtm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ player }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    clearInterval(textInterval);
+                    populateGTM(player, data);
+                    loading.classList.add('hidden');
+                    result.classList.remove('hidden');
+                })
+                .catch(error => {
+                    clearInterval(textInterval);
+                    console.error('Error:', error);
+                    loadingText.innerText = "Error generating strategy. Please try again.";
+                });
         }
 
-        function populateGTM(player) {
+        function populateGTM(player, strategy) {
             document.getElementById('modal-player-name').innerText = player.name;
-            document.getElementById('gtm-north-star').innerText = player.gtm.northStar;
-            document.getElementById('gtm-vector').innerText = player.gtm.vector;
-            document.getElementById('gtm-action').innerText = player.gtm.action;
+            document.getElementById('gtm-north-star').innerText = strategy.northStar;
+            document.getElementById('gtm-vector').innerText = strategy.vector;
+            document.getElementById('gtm-action').innerText = strategy.action;
 
             const tacticsList = document.getElementById('gtm-tactics');
-            tacticsList.innerHTML = player.gtm.tactics.map(t => `
+            tacticsList.innerHTML = strategy.tactics.map(t => `
                 <li class="flex items-start text-sm text-slate-600">
                     <span class="text-teal-500 mr-2">✓</span>
                     ${t}
