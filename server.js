@@ -24,7 +24,7 @@ app.get('/infographic', (req, res) => {
 app.post('/api/generate-gtm', async (req, res) => {
     try {
         const { player } = req.body;
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
             Act as a top-tier strategy consultant (McKinsey/Bain level).
